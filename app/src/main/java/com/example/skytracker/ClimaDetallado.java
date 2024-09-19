@@ -1,3 +1,5 @@
+package com.example.skytracker;
+
 public class ClimaDetallado {
     private String hora;
     private String temperatura;
