@@ -23,20 +23,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Referencia al contenedor de las ciudades y al botón para agregar ciudad
         cityContainer = findViewById(R.id.cityContainer);
         Button addCityButton = findViewById(R.id.button_add_city);
+        Button btnResena = findViewById(R.id.btnResena);
 
-        // Acción cuando se presiona el botón "Agregar Ciudad"
+
         addCityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddCityDialog();
             }
         });
+
+
+        btnResena.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, activity_resena.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    // Método para mostrar el diálogo que permite agregar una nueva ciudad
+
     private void showAddCityDialog() {
         final EditText input = new EditText(MainActivity.this);
 
@@ -48,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String cityName = input.getText().toString().trim();
-
-                        // Validar que el nombre de la ciudad no esté vacío
                         if (!cityName.isEmpty()) {
                             addCityToContainer(cityName);
                         } else {
@@ -61,28 +68,23 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Método para añadir una nueva ciudad al contenedor
+
     private void addCityToContainer(final String cityName) {
-        // Inflar el layout de la ciudad que será un CardView
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
         View cityView = inflater.inflate(R.layout.city_layout, cityContainer, false);
 
-        // Asignar el nombre de la ciudad al TextView del CardView
         TextView cityNameTextView = cityView.findViewById(R.id.textView3);
         cityNameTextView.setText(cityName);
 
-        // Agregar el evento de click al CardView para abrir la actividad con el clima detallado
         cityView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crear intent para abrir la actividad de clima detallado
                 Intent intent = new Intent(MainActivity.this, ClimaDetalladoActivity.class);
-                intent.putExtra("ciudadNombre", cityName); // Pasar el nombre de la ciudad
-                startActivity(intent); // Iniciar la actividad
+                intent.putExtra("ciudadNombre", cityName);
+                startActivity(intent);
             }
         });
 
-        // Agregar la nueva ciudad al contenedor
         cityContainer.addView(cityView);
     }
 }
