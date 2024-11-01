@@ -1,45 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/textHora"
+        android:id="@+id/textViewDescripcion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="17:00"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageClima"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/sol"
-        app:layout_constraintStart_toEndOf="@id/textHora"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Descripción del clima" />
 
     <TextView
-        android:id="@+id/textTemperatura"
+        android:id="@+id/textViewTemperatura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="21°"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@id/imageClima"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textEstadoClima"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Soleado"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textHora"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Temperatura" />
+</LinearLayout>

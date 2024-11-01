@@ -9,46 +9,49 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
+
 public class ClimaAdapter extends RecyclerView.Adapter<ClimaAdapter.ClimaViewHolder> {
 
-    private ArrayList<ClimaDetallado> climaList;
+    private List<Clima> listaClima;
 
-    public ClimaAdapter(ArrayList<ClimaDetallado> climaList) {
-        this.climaList = climaList;
+    public ClimaAdapter(List<Clima> listaClima) {
+        this.listaClima = listaClima;
     }
 
     @NonNull
     @Override
     public ClimaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clima, parent, false);
-        return new ClimaViewHolder(view);
+        View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clima, parent, false);
+        return new ClimaViewHolder(vista);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ClimaViewHolder holder, int position) {
-        ClimaDetallado clima = climaList.get(position);
-        holder.textHora.setText(clima.getHora());
-        holder.textTemperatura.setText(clima.getTemperatura());
-        holder.textEstadoClima.setText(clima.getCondiciones());
-
-        holder.imageClima.setImageResource(R.drawable.sol);
+        Clima clima = listaClima.get(position);
+        holder.descripcionTextView.setText(clima.getDescripcion());
+        holder.temperaturaTextView.setText(String.valueOf(clima.getTemperatura()) + "°C");
     }
 
     @Override
     public int getItemCount() {
-        return climaList.size();
+        return listaClima.size();
     }
 
-    public static class ClimaViewHolder extends RecyclerView.ViewHolder {
-        TextView textHora, textTemperatura, textEstadoClima;
-        ImageView imageClima;
+    static class ClimaViewHolder extends RecyclerView.ViewHolder {
+        TextView descripcionTextView;
+        TextView temperaturaTextView;
 
         public ClimaViewHolder(@NonNull View itemView) {
             super(itemView);
-            textHora = itemView.findViewById(R.id.textHora);
-            textTemperatura = itemView.findViewById(R.id.textTemperatura);
-            textEstadoClima = itemView.findViewById(R.id.textEstadoClima);
-            imageClima = itemView.findViewById(R.id.imageClima);
+            descripcionTextView = itemView.findViewById(R.id.textViewDescripcion);
+            temperaturaTextView = itemView.findViewById(R.id.textViewTemperatura);
         }
     }
 }
