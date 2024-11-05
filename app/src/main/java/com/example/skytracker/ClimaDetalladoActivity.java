@@ -1,87 +1,69 @@
 package com.example.skytracker;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
-import org.json.JSONObject;
-
-import android.os.Bundle;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClimaDetalladoActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewClimaDetallado;
-    private ClimaAdapter climaAdapter;
-    private List<Clima> listaClima; // Lista para almacenar los datos del clima
-    private APIClima apiClima;
+    private TextView textViewTituloCiudad;
+    private TextView textViewVelocidadViento;
+    private TextView textViewHoraPuestaSol;
+    private TextView textViewClimaPorHora;
+    private TextView textViewDetallesAdicionales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clima_detallado);
 
-        textViewDescripcion = findViewById(R.id.textViewDescripcion);
-        textViewTemperatura = findViewById(R.id.textViewTemperatura);
+        textViewTituloCiudad = findViewById(R.id.textViewTituloCiudad);
         textViewVelocidadViento = findViewById(R.id.textViewVelocidadViento);
         textViewHoraPuestaSol = findViewById(R.id.textViewHoraPuestaSol);
-        Button buttonRegresar = findViewById(R.id.buttonRegresar);
-
-        listaClima = new ArrayList<>(); // Inicializa la lista de clima
-        climaAdapter = new ClimaAdapter(listaClima); // Crea el adaptador
-
-        recyclerViewClimaDetallado.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewClimaDetallado.setAdapter(climaAdapter); // Asigna el adaptador al RecyclerView
+        textViewClimaPorHora = findViewById(R.id.textViewClimaPorHora);
+        textViewDetallesAdicionales = findViewById(R.id.textViewDetallesAdicionales);
 
         String ciudadNombre = getIntent().getStringExtra("ciudadNombre");
-        apiClima = new APIClima(this);
+        textViewTituloCiudad.setText(ciudadNombre);
 
+        APIClima apiClima = new APIClima(this);
         apiClima.obtenerClimaPorCiudad(ciudadNombre, new APIClima.ClimaCallback() {
             @Override
             public void onSuccess(JSONObject datosClima) {
-                mostrarDatosClima(datosClima);
+                try {
+                    JSONObject viento = datosClima.getJSONObject("wind");
+                    double velocidadViento = viento.getDouble("speed");
+                    textViewVelocidadViento.setText("Velocidad del Viento: " + velocidadViento + " m/s");
+
+                    // Obtener la hora de la puesta del sol
+                    long horaPuestaSol = datosClima.getJSONObject("sys").getLong("sunset") * 1000; // Convertir a milisegundos
+                    String horaPuestaSolStr = new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(horaPuestaSol));
+                    textViewHoraPuestaSol.setText("Hora de Puesta del Sol: " + horaPuestaSolStr);
+
+                    obtenerClimaPorHora(ciudadNombre);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onError(String mensajeError) {
-                Toast.makeText(ClimaDetalladoActivity.this, "Error: " + mensajeError, Toast.LENGTH_SHORT).show();
+                // Manejar el error
+                textViewDetallesAdicionales.setText("Error: " + mensajeError);
             }
         });
     }
 
-    private void mostrarDatosClima(JSONObject datosClima) {
-        try {
-            String descripcion = datosClima.getJSONArray("current").getJSONObject(0).getString("weather").getJSONObject(0).getString("description");
-            double temperatura = datosClima.getJSONObject("current").getDouble("temp");
+    private void obtenerClimaPorHora(String ciudadNombre) {
 
-            double velocidadViento = datosClima.getJSONObject("current").getDouble("wind_speed");
-            long horaPuestaSol = datosClima.getJSONObject("current").getLong("sunset");
+        String dummyData = "10:00 - 22°C\n11:00 - 23°C\n12:00 - 24°C\n13:00 - 25°C\n14:00 - 26°C";
+        textViewClimaPorHora.setText("Clima por Hora:\n" + dummyData);
 
-            String horaPuestaSolLocal = new java.text.SimpleDateFormat("HH:mm").format(new java.util.Date(horaPuestaSol * 1000));
-
-            textViewDescripcion.setText(descripcion);
-            textViewTemperatura.setText(String.valueOf(temperatura) + " °C");
-            textViewVelocidadViento.setText(String.valueOf(velocidadViento) + " m/s");
-            textViewHoraPuestaSol.setText(horaPuestaSolLocal);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error al procesar los datos del clima.", Toast.LENGTH_SHORT).show();
-        }
+        String detallesAdicionales = "Nubes: 10%\nHumedad: 60%\nPresión: 1012 hPa";
+        textViewDetallesAdicionales.setText("Detalles Adicionales:\n" + detallesAdicionales);
     }
-
 }

@@ -34,10 +34,15 @@ android {
 dependencies {
 
     implementation(libs.appcompat)
+    implementation("androidx.room:room-runtime:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation(libs.material)
     implementation(libs.activity)
     implementation("com.android.volley:volley:1.2.1")
+    implementation(libs.recyclerview.v121)
     implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

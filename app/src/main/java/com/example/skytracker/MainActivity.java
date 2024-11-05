@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Selecciona una ciudad");
 
-        // Convertir la lista de ciudades a un arreglo
         String[] ciudadesArray = listaCiudades.toArray(new String[0]);
 
         builder.setItems(ciudadesArray, new DialogInterface.OnClickListener() {
@@ -86,23 +85,29 @@ public class MainActivity extends AppCompatActivity {
         View vistaCiudad = inflater.inflate(R.layout.city_layout, cityContainer, false);
 
         TextView nombreCiudadTextView = vistaCiudad.findViewById(R.id.textViewNombreCiudad);
-        nombreCiudadTextView.setText(nombreCiudad); // Asegúrate de que estás configurando el nombre de la ciudad
+        TextView temperaturaTextView = vistaCiudad.findViewById(R.id.textViewTemperatura);
+        ImageView imagenClima = vistaCiudad.findViewById(R.id.imageViewClima);
+
+        nombreCiudadTextView.setText(nombreCiudad);
+
+        obtenerClima(nombreCiudad, temperaturaTextView, imagenClima);
 
         vistaCiudad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ClimaDetalladoActivity.class);
-                intent.putExtra("ciudadNombre", nombreCiudad); // Pasa correctamente el nombre de la ciudad
+                intent.putExtra("ciudadNombre", nombreCiudad);
                 startActivity(intent);
             }
         });
 
-        cityContainer.addView(vistaCiudad); // Agrega la vista de la ciudad al contenedor
+        cityContainer.addView(vistaCiudad);
     }
 
 
 
-        private void obtenerClima(String nombreCiudad, TextView temperaturaTextView, ImageView imagenClima) {
+
+    private void obtenerClima(String nombreCiudad, TextView temperaturaTextView, ImageView imagenClima) {
         apiClima.obtenerClimaPorCiudad(nombreCiudad, new APIClima.ClimaCallback() {
             @Override
             public void onSuccess(JSONObject datosClima) {
@@ -117,8 +122,10 @@ public class MainActivity extends AppCompatActivity {
                         imagenClima.setImageResource(R.drawable.sol);
                     } else if (descripcion.contains("rain")) {
                         imagenClima.setImageResource(R.drawable.lluvia);
+                    } else if (descripcion.contains("cloud")) {
                         imagenClima.setImageResource(R.drawable.nube);
                     }
+                    // Agregar más condiciones si es necesario
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.this, "Error al procesar los datos del clima", Toast.LENGTH_SHORT).show();
@@ -131,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 

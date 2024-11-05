@@ -20,7 +20,6 @@ public class APIClima {
     }
 
     public void obtenerClimaPorCiudad(String ciudad, final ClimaCallback callback) {
-        // Primero obtenemos las coordenadas de la ciudad
         String url = "https://api.openweathermap.org/data/2.5/weather?q=" + ciudad + "&appid=" + CLAVE_API + "&units=metric&lang=es";
 
         StringRequest solicitud = new StringRequest(Request.Method.GET, url,
@@ -34,14 +33,19 @@ public class APIClima {
 
                             obtenerClimaDetallado(latitud, longitud, callback);
                         } catch (Exception e) {
-                            callback.onError("Error al procesar los datos de la ciudad");
+                            callback.onError("Error al procesar los datos de la ciudad: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.onError("Error en la solicitud: " + error.getMessage());
+                        String errorMsg = "Error en la solicitud de ciudad";
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            errorMsg += " (Código: " + statusCode + ")";
+                        }
+                        callback.onError(errorMsg);
                     }
                 });
 
@@ -59,14 +63,19 @@ public class APIClima {
                             JSONObject jsonRespuesta = new JSONObject(respuesta);
                             callback.onSuccess(jsonRespuesta);
                         } catch (Exception e) {
-                            callback.onError("Error al procesar los datos del clima detallado");
+                            callback.onError("Error al procesar los datos del clima detallado: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.onError("Error en la solicitud: " + error.getMessage());
+                        String errorMsg = "Error en la solicitud de clima detallado";
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            errorMsg += " (Código: " + statusCode + ")";
+                        }
+                        callback.onError(errorMsg);
                     }
                 });
 
