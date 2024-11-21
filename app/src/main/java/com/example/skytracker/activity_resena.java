@@ -1,6 +1,5 @@
 package com.example.skytracker;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,76 +10,81 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class activity_resena extends AppCompatActivity {
 
+    private EditText editTextCorreo, editTextDescripcion;
     private Spinner spinnerMotivo;
-    private RatingBar barraCalificacion;
-    private EditText editTextEmail, editTextDescripcion; // Añadido
-    private Button btnAccesoAdmin;
+    private RatingBar ratingBar;
+    private Button btnEnviar, btnRegresar, btnAccesoAdmin;
+
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resena);
 
+
+        editTextCorreo = findViewById(R.id.editTextTextEmailAddress);
         spinnerMotivo = findViewById(R.id.spinner);
-        barraCalificacion = findViewById(R.id.ratingBar);
-        editTextEmail = findViewById(R.id.editTextTextEmailAddress); // Inicializado
-        editTextDescripcion = findViewById(R.id.editTextTextMultiLine2); // Inicializado
-
-        Button btnRegresar = findViewById(R.id.btnRegresar);
-        btnRegresar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity_resena.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        Button btnEnviar = findViewById(R.id.btnEnviar);
-        btnEnviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String correo = editTextEmail.getText().toString(); // Obtener el correo
-                String motivo = spinnerMotivo.getSelectedItem().toString(); // Obtener el motivo
-                int calificacion = (int) barraCalificacion.getRating(); // Obtener la calificación
-                String descripcion = editTextDescripcion.getText().toString(); // Obtener la descripción
-
-                // Comprobar que los campos no estén vacíos
-                if (correo.isEmpty() || descripcion.isEmpty()) {
-                    Toast.makeText(activity_resena.this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Agregar la reseña a la base de datos
-                ResenaOpenHelper baseDatosResena = new ResenaOpenHelper(activity_resena.this);
-                baseDatosResena.agregarResena(correo, motivo, calificacion, descripcion);
-
-                Toast.makeText(activity_resena.this, "Gracias por su reseña", Toast.LENGTH_LONG).show();
-                // Limpiar campos
-                editTextEmail.setText("");
-                editTextDescripcion.setText("");
-                barraCalificacion.setRating(0);
-            }
-        });
-
-        // Configuración del botón para acceder al modo administrador
+        editTextDescripcion = findViewById(R.id.editTextTextMultiLine2);
+        ratingBar = findViewById(R.id.ratingBar);
+        btnEnviar = findViewById(R.id.btnEnviar);
+        btnRegresar = findViewById(R.id.btnRegresar);
         btnAccesoAdmin = findViewById(R.id.btnAccesoAdmin);
-        btnAccesoAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarDialogoContraseña();
+
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("resenas");
+
+        btnEnviar.setOnClickListener(v -> enviarResena());
+
+        btnRegresar.setOnClickListener(v -> finish());
+
+        btnAccesoAdmin.setOnClickListener(v -> mostrarDialogoContraseña());
+    }
+
+    private void enviarResena() {
+        String correo = editTextCorreo.getText().toString().trim();
+        String motivo = spinnerMotivo.getSelectedItem().toString();
+        String descripcion = editTextDescripcion.getText().toString().trim();
+        float calificacion = ratingBar.getRating();
+
+        if (correo.isEmpty() || descripcion.isEmpty() || calificacion == 0) {
+            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String id = databaseReference.push().getKey();
+        Resena resena = new Resena(id, correo, motivo, descripcion, calificacion);
+
+        assert id != null;
+        databaseReference.child(id).setValue(resena).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Reseña enviada correctamente.", Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+            } else {
+                Toast.makeText(this, "Error al enviar la reseña.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void limpiarCampos() {
+        editTextCorreo.setText("");
+        editTextDescripcion.setText("");
+        spinnerMotivo.setSelection(0);
+        ratingBar.setRating(0);
+    }
+
     private void mostrarDialogoContraseña() {
-        // Crear un campo de entrada para la contraseña
         final EditText entradaContraseña = new EditText(this);
         entradaContraseña.setHint("Ingresa la contraseña");
+        entradaContraseña.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         new AlertDialog.Builder(this)
                 .setTitle("Acceso Admin")

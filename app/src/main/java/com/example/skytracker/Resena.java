@@ -1,31 +1,36 @@
 package com.example.skytracker;
 
 public class Resena {
-
-    private int id;
+    private String id;
     private String correo;
     private String motivo;
-    private int calificacion;
     private String descripcion;
+    private float calificacion;
 
-    public Resena(int id, String correo, String motivo, int calificacion, String descripcion) {
+
+    public Resena() {}
+
+    public Resena(String id, String correo, String motivo, String descripcion, float calificacion) {
         this.id = id;
         this.correo = correo;
         this.motivo = motivo;
-        this.calificacion = calificacion;
         this.descripcion = descripcion;
+        this.calificacion = calificacion;
     }
 
-    // Getters y setters
-    public int getId() { return id; }
-    public String getCorreo() { return correo; }
-    public String getMotivo() { return motivo; }
-    public int getCalificacion() { return calificacion; }
-    public String getDescripcion() { return descripcion; }
+    // Getters y Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(int id) { this.id = id; }
+    public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
+
+    public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }
-    public void setCalificacion(int calificacion) { this.calificacion = calificacion; }
+
+    public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public float getCalificacion() { return calificacion; }
+    public void setCalificacion(float calificacion) { this.calificacion = calificacion; }
 }

@@ -20,16 +20,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <Button
-        android:id="@+id/btnAccesoAdmin"
-        android:layout_width="71dp"
-        android:layout_height="41dp"
-        android:text="Admin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.997"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="230dp"
@@ -141,6 +131,17 @@
         app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnAccesoAdmin"
+        android:layout_width="84dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Modo Administrador"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -37,6 +38,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.5.0")
     annotationProcessor("androidx.room:room-compiler:2.5.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation (platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation (libs.firebase.database)
     implementation(libs.material)
     implementation(libs.activity)
     implementation("com.android.volley:volley:1.2.1")
